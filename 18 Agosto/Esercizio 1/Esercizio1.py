@@ -28,7 +28,7 @@ def parole_frequenti(file):
     except FileNotFoundError:
         return f"Errore: il file '{file}' non esiste."
 
-file = "\input.txt"
+file = "18 Agosto\Esercizio 1\input.txt"
 print("Numero di righe:", conta_righe(file))
 print("Numero di parole totali:", conta_parole(file))
 print("Top 5 parole:", parole_frequenti(file))
