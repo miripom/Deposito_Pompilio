@@ -2,7 +2,7 @@ import pandas as pd
 
 df = pd.read_csv("19 Agosto\Esercizio 1\PJME_hourly.csv", parse_dates=["Datetime"])
 
-print(df.head())
+print(df.describe())
 
 df["Date"] = df["Datetime"].dt.date
 df["Week"] = df["Datetime"].dt.isocalendar().week
