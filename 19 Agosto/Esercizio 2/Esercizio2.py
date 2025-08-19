@@ -16,7 +16,7 @@ df["Date"] = pd.to_datetime(df["Date"], errors="coerce")
 df = df.dropna(subset=["NO2(GT)"])
 
 daily_mean = df.groupby(df["Date"].dt.date)["NO2(GT)"].transform("mean")
-df["AirQuality"] = np.where(df["NO2(GT)"] <= daily_mean, 0, 1)
+df["AirQuality"] = np.where(df["NO2(GT)"] <= daily_mean, 1, 0)
 
 df["dayofweek"] = df["Date"].dt.dayofweek
 df["month"] = df["Date"].dt.month
@@ -32,7 +32,7 @@ clf.fit(X_train,y_train)
 
 y_predclf = clf.predict(X_test)
 
-xgb = XGBClassifier(use_label_encoder=False, eval_metric = "logloss", random_state = 42)
+xgb = XGBClassifier(random_state = 42)
 xgb.fit(X_train,y_train)
 
 y_predxgb = xgb.predict(X_test)
