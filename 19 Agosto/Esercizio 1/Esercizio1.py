@@ -15,3 +15,6 @@ df["Daily_Class"] = (df["PJME_MW"] > df["Daily_Mean"]).map({True:"Alto", False:"
 df["Weekly_Class"] = (df["PJME_MW"] > df["Weekly_Mean"]).map({True: "Alto", False:"Basso"})
 
 print(df.head())
+
+print(df["Daily_Class"].value_counts())
+print(df["Weekly_Class"].value_counts())
