@@ -3,6 +3,7 @@ import numpy as np
 from sklearn.model_selection import train_test_split
 from sklearn.ensemble import RandomForestClassifier
 from sklearn.metrics import classification_report
+from xgboost import XGBClassifier
 
 df = pd.read_csv("19 Agosto\Esercizio 2\AirQualityUCI.csv", sep=";")
 df = df.rename(columns=lambda x: x.strip())
@@ -15,7 +16,7 @@ df["Date"] = pd.to_datetime(df["Date"], errors="coerce")
 df = df.dropna(subset=["NO2(GT)"])
 
 daily_mean = df.groupby(df["Date"].dt.date)["NO2(GT)"].transform("mean")
-df["AirQuality"] = np.where(df["NO2(GT)"] <= daily_mean, "buona", "scarsa")
+df["AirQuality"] = np.where(df["NO2(GT)"] <= daily_mean, 0, 1)
 
 df["dayofweek"] = df["Date"].dt.dayofweek
 df["month"] = df["Date"].dt.month
@@ -29,8 +30,17 @@ X_train, X_test, y_train, y_test = train_test_split(X,y, test_size=0.2, random_s
 clf = RandomForestClassifier(random_state=42)
 clf.fit(X_train,y_train)
 
-y_pred = clf.predict(X_test)
+y_predclf = clf.predict(X_test)
 
-print("Classification Report:")
-print(classification_report(y_test,y_pred))
+xgb = XGBClassifier(use_label_encoder=False, eval_metric = "logloss", random_state = 42)
+xgb.fit(X_train,y_train)
+
+y_predxgb = xgb.predict(X_test)
+
+print("Random Forest Classifier Report:")
+print(classification_report(y_test,y_predclf))
+
+print("XGB Classifier Report:")
+print(classification_report(y_test, y_predxgb))
+
 
