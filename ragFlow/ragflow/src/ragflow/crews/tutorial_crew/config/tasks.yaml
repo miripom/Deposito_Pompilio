@@ -1,0 +1,126 @@
+plan_tutorial:
+  description: >
+    Analizza l'argomento: "{topic}"
+    
+    Crea un piano dettagliato SOLO TEORICO che include:
+    
+    1. ANALISI DELL'ARGOMENTO
+       - Identifica il campo/disciplina
+       - Determina i 5-7 concetti chiave da spiegare
+       - Stabilisci i prerequisiti necessari
+       - Definisci gli obiettivi di apprendimento
+    
+    2. STRUTTURA DEL CONTENUTO TEORICO
+       - Punto 1: Introduzione e motivazione
+       - Punto 2-3: Concetti fondamentali
+       - Punto 4-5: Sviluppo e approfondimento
+       - Punto 6: Collegamenti e applicazioni teoriche
+       - Punto 7: Conclusioni e prospettive future
+    
+    3. DELEGAZIONE AGLI SCRITTORI
+       - Quali punti assegnare al primo scrittore (introduzione e basi)
+       - Quali punti assegnare al secondo scrittore (approfondimenti)
+       - Come devono integrarsi i contenuti
+    
+    Concentrati SOLO su spiegazioni teoriche, NON includere esercizi o pratica.
+  expected_output: >
+    Piano strutturato con 5-7 punti teorici chiari, 
+    ognuno con indicazioni su cosa deve contenere
+  agent: tutorial_manager
+
+write_introduction:
+  description: >
+    Scrivi l'introduzione e i concetti base per: "{topic}"
+    
+    Basandoti sul piano, sviluppa i PRIMI 3 PUNTI:
+    
+    PUNTO 1 - INTRODUZIONE COINVOLGENTE
+    - Cattura l'attenzione con una frase d'impatto
+    - Spiega perché questo argomento è importante
+    - Dove si applica nella vita reale
+    - Cosa imparerai leggendo questo tutorial
+    
+    PUNTO 2 - PRIMO CONCETTO FONDAMENTALE
+    - Definizione chiara e semplice
+    - Analogia o metafora per comprenderlo
+    - Perché è importante conoscerlo
+    - Come si collega all'introduzione
+    
+    PUNTO 3 - SECONDO CONCETTO FONDAMENTALE  
+    - Definizione progressiva dal punto 2
+    - Esempi teorici o illustrazioni concettuali
+    - Differenze e similitudini col primo concetto
+    - Costruzione graduale della comprensione
+    
+    Usa un linguaggio accessibile ma preciso. NO esercizi, SOLO teoria.
+  expected_output: >
+    Testo ben scritto che copre introduzione e primi 
+    due concetti fondamentali in modo chiaro e coinvolgente
+  agent: content_writer_1
+
+write_main_content:
+  description: >
+    Scrivi i contenuti avanzati per: "{topic}"
+    
+    Basandoti sul piano, sviluppa i PUNTI 4-7:
+    
+    PUNTO 4 - APPROFONDIMENTO TECNICO
+    - Dettagli più avanzati e tecnici
+    - Casi speciali ed eccezioni
+    - Sfumature e precisazioni importanti
+    - Terminologia specialistica spiegata
+    
+    PUNTO 5 - COLLEGAMENTI E RELAZIONI
+    - Come si collega ad altri concetti del campo
+    - Relazioni con argomenti correlati
+    - Impatto su altre aree di conoscenza
+    - Visione sistemica dell'argomento
+    
+    PUNTO 6 - APPLICAZIONI TEORICHE E IMPLICAZIONI
+    - Conseguenze teoriche del concetto
+    - Come influenza il pensiero nel campo
+    - Sviluppi e ricerche attuali
+    - Questioni aperte e dibattiti
+    
+    PUNTO 7 - CONCLUSIONI E PROSPETTIVE
+    - Riepilogo dei concetti chiave
+    - Importanza di quanto appreso
+    - Direzioni future e trend
+    - Suggerimenti per approfondimenti
+    
+    Mantieni chiarezza anche nei contenuti avanzati. SOLO teoria, NO esercizi.
+  expected_output: >
+    Testo approfondito che sviluppa i concetti avanzati
+    e fornisce una visione completa dell'argomento
+  agent: content_writer_2
+
+compile_final:
+  description: >
+    Compila il tutorial finale completo per: "{topic}"
+    
+    Integra i contenuti dei due scrittori in un tutorial coerente:
+    
+    1. FORMATTAZIONE PROFESSIONALE
+       - Titolo accattivante per il tutorial
+       - Indice dei contenuti numerato
+       - Transizioni fluide tra le sezioni
+       - Evidenziazione concetti chiave (in **grassetto**)
+    
+    2. STRUTTURA FINALE
+       - Introduzione (dal writer 1)
+       - Concetti fondamentali (dal writer 1)  
+       - Approfondimenti (dal writer 2)
+       - Collegamenti e applicazioni (dal writer 2)
+       - Conclusioni e risorse (dal writer 2)
+    
+    3. ELEMENTI AGGIUNTIVI
+       - Box informativi per definizioni importanti
+       - Note a margine per curiosità
+       - Lista finale di "Cosa hai imparato"
+       - 3-5 risorse consigliate per approfondire
+    
+    Il tutorial deve essere SOLO TEORICO e spiegativo, senza esercizi.
+  expected_output: >
+    Tutorial teorico completo, ben formattato e professionale
+    che spiega l'argomento in modo progressivo e chiaro
+  agent: tutorial_manager
