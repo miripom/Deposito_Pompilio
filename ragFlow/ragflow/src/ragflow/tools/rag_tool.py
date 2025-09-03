@@ -245,7 +245,6 @@ class Settings:
 
 SETTINGS = Settings()
 
-@tool("search_rag")
 class RAGSystem:
     def __init__(self):
 
@@ -531,6 +530,46 @@ class RAGSystem:
         ]
         
         return medical_documents
+    
+    def _initialize_rag(self):
+        """Inizializza il sistema RAG con documenti medici"""
+        documents = self._create_medical_documents()
+        chunks = split_documents(documents, SETTINGS)
+        
+        client = get_qdrant_client(SETTINGS)
+        sample_vec = self.embeddings.embed_query("test")
+        vector_size = len(sample_vec)
+        
+        recreate_collection_for_rag(client, SETTINGS, vector_size)
+        upsert_chunks(client, SETTINGS, chunks, self.embeddings)
+        
+        self.client = client
+        self.chain = build_rag_chain(self.llm)
+    
+    def search(self, query: str) -> str:
+        """Esegue ricerca ibrida e restituisce risposta"""
+        results = hybrid_search(self.client, SETTINGS, query, self.embeddings)
+        
+        if not results:
+            return "Non sono stati trovati documenti rilevanti per la tua domanda."
+        
+        context = format_docs_for_prompt(results)
+        response = self.chain.invoke({
+            "context": context,
+            "question": query
+        })
+        
+        return response
+
+# Istanza globale
+_rag_system = None
+
+def get_rag_system() -> RAGSystem:
+    """Ottiene l'istanza del sistema RAG"""
+    global _rag_system
+    if _rag_system is None:
+        _rag_system = RAGSystem()
+    return _rag_system
     
 def split_documents(docs: List[Document], settings: Settings) -> List[Document]:
     splitter = RecursiveCharacterTextSplitter(
@@ -1110,7 +1149,6 @@ def build_rag_chain(llm):
         "Sei un assistente tecnico. Rispondi in italiano, conciso e accurato. "
         "Usa ESCLUSIVAMENTE le informazioni presenti nel CONTENUTO. "
         "Se non è presente, dichiara: 'Non è presente nel contesto fornito.' "
-        "Cita sempre le fonti nel formato [source:FILE]."
     )
 
     prompt = ChatPromptTemplate.from_messages([
@@ -1120,8 +1158,7 @@ def build_rag_chain(llm):
          "CONTENUTO:\n{context}\n\n"
          "Istruzioni:\n"
          "1) Risposta basata solo sul contenuto.\n"
-         "2) Includi citazioni [source:...].\n"
-         "3) Niente invenzioni.")
+         "2) Niente invenzioni.")
     ])
 
     chain = (
@@ -1134,4 +1171,31 @@ def build_rag_chain(llm):
         | StrOutputParser()
     )
     return chain
+
+@tool
+def medical_search_tool(query: str) -> str:
+    """
+    Ricerca medica nel database locale utilizzando ricerca ibrida (semantica + testuale).
+    
+    Questo tool permette all'agente Medical Information Specialist di cercare
+    informazioni mediche accurate nel database locale. Utilizza una ricerca ibrida
+    che combina similarità semantica e matching testuale per trovare i documenti
+    più rilevanti.
+    
+    Args:
+        query: La domanda o query medica da ricercare
+        
+    Returns:
+        Risposta medica dettagliata basata sui documenti trovati, con citazioni delle fonti
+        
+    Esempi di utilizzo:
+    - "Quali sono i sintomi dell'asma?"
+    - "Come si cura il diabete?"
+    - "Trattamenti per l'ipertensione"
+    """
+    try:
+        rag_system = get_rag_system()
+        return rag_system.search(query)
+    except Exception as e:
+        return f"Errore durante la ricerca medica: {str(e)}"
 

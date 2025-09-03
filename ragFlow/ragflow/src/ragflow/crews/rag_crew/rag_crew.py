@@ -21,7 +21,7 @@ from typing import List
 from crewai import Agent, Crew, Process, Task  # pylint: disable=import-error
 from crewai.project import CrewBase, agent, crew, task  # pylint: disable=import-error
 from crewai.agents.agent_builder.base_agent import BaseAgent  # pylint: disable=import-error
-from ragflow.tools.rag_tool import search_rag
+from ragflow.tools.rag_tool import medical_search_tool
 
 @CrewBase
 class RagCrew():
@@ -56,17 +56,17 @@ class RagCrew():
 
         Questo metodo crea e configura un agente specializzato nella ricerca medica
         utilizzando la configurazione definita nei file YAML. L'agente è equipaggiato
-        con strumenti di ricerca RAG per interrogare l'indice FAISS di documenti medici.
+        con il tool medical_search_tool per interrogare il database medico Qdrant.
 
         Returns:
             Agent: Un agente configurato per eseguire ricerche mediche tramite RAG.
-                  L'agente include il tool search_rag e modalità verbose attiva.
+                  L'agente include il tool medical_search_tool e modalità verbose attiva.
 
         Raises:
             KeyError: Se la configurazione 'medical_specialist' non è presente
                      in agents_config.
             ValueError: Se la configurazione dell'agente non è valida.
-            FileNotFoundError: Se l'indice RAG non è disponibile o non può essere caricato.
+            RuntimeError: Se il sistema RAG non è inizializzato correttamente.
 
         Example:
             >>> crew = RagCrew()
@@ -78,7 +78,7 @@ class RagCrew():
         """
         return Agent(
             config=self.agents_config['medical_specialist'],
-            tools=[search_rag],
+            tools=[medical_search_tool],
             verbose=True
         )
 
